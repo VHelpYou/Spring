@@ -1,0 +1,81 @@
+buildscript {
+    ext {
+        springBootVersion = "2.0.3.RELEASE"
+        springVersion = "5.0.7.RELEASE"
+        hsqldbVersion = "2.4.1"
+        jaxbAPIVersion = "2.3.0"
+        hibernateEntityManagerVersion = "5.2.17.Final"
+        simpleJndiVersion = "0.11.4.1"
+        reactorSpringVersion = "1.0.1.RELEASE"
+        activeMQBrokerVersion = "5.15.4"
+        junit5JupiterEngineVersion= "5.1.1"
+        junit5PlatformRunnerVersion= "1.2.0"
+        junit5VintageEngineVersion= "5.1.1"
+    }
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.0.3.RELEASE'
+}
+
+allprojects {
+    apply plugin: 'maven'
+
+    group = 'io.pivotal.education.core-spring'
+    version = '5.0.c.RELEASE'
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: "io.spring.dependency-management"
+
+    repositories {
+        mavenLocal()
+        maven {
+            url = 'https://repo.spring.io/libs-milestone'
+        }
+
+        maven {
+            url = 'http://repo.spring.io/milestone'
+        }
+
+        maven {
+            url = 'http://repo.maven.apache.org/maven2'
+        }
+    }
+
+    dependencies {
+        compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+        compile "org.springframework:spring-jdbc:$springVersion"
+        compile "org.hsqldb:hsqldb:$hsqldbVersion"
+        compile "javax.xml.bind:jaxb-api:$jaxbAPIVersion"
+
+        testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+        testCompile "org.junit.jupiter:junit-jupiter-engine:$junit5JupiterEngineVersion"
+        testCompile "org.junit.platform:junit-platform-runner:$junit5PlatformRunnerVersion"
+        testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5VintageEngineVersion"
+    }
+
+    sourceCompatibility = '1.8'
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    test {
+        // Enable JUnit 5 testing
+        useJUnitPlatform()
+
+        // Test result on console
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+}
